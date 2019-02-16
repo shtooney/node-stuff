@@ -180,24 +180,7 @@ describe('POST /todos', () => {
                     expect(res.body.todo.completedAt).toNotExist();
                 })
                 .end(done);
-        });
-
-        
-        it('should get 404 if obj not found', (done) => {
-            request(app)
-                .patch(`/todos/${todos[1]._id.toHexString()}1`) // note this is supposed to be incorrect hence "1" at the end
-                .expect(404)
-                .end(done);
-        });
-        
-        
-        it('should get 404 if invalid obj id', (done) => {
-            request(app)
-                .patch(`/todos/123`)
-                .expect(404)
-                .end(done);
-        });
-       
+        });           
 
     });
 
