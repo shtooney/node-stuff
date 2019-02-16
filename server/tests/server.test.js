@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const expect = require('expect');
 const request = require('supertest');
 const {ObjectID} = require('mongodb');
@@ -12,7 +13,9 @@ const todos = [
     },
     {
         _id: new ObjectID(),
-        text: 'Second test todo'
+        text: 'Second test todo',
+        completed: true,
+        completedAt: 333
     }
 ];
 
@@ -137,6 +140,60 @@ describe('POST /todos', () => {
         it('should get 404 if invalid obj id', (done) => {
             request(app)
                 .delete(`/todos/123`)
+                .expect(404)
+                .end(done);
+        });
+       
+
+    });
+
+    describe('PATCH /todos/:id', () => {
+
+        it('should update todo for given ID with given body', (done) => {
+            request(app)
+                .patch(`/todos/${todos[0]._id.toHexString()}`)
+                .send({
+                    text: 'eee123',
+                    completed: true
+                })
+                .expect(200)
+                .expect((res) => {
+                    expect(res.body.todo.text).toBe('eee123');
+                    expect(res.body.todo.completed).toBe(true);
+                    expect(res.body.todo.completedAt).toBeA('number');
+                })
+                .end(done);
+        });
+
+
+        it('should clear completedAt when todo is not completed', (done) => {
+            request(app)
+                .patch(`/todos/${todos[1]._id.toHexString()}`)
+                .send({
+                    text: 'eee123',
+                    completed: false
+                })
+                .expect(200)
+                .expect((res) => {
+                    expect(res.body.todo.text).toBe('eee123');
+                    expect(res.body.todo.completed).toBe(false);
+                    expect(res.body.todo.completedAt).toNotExist();
+                })
+                .end(done);
+        });
+
+        
+        it('should get 404 if obj not found', (done) => {
+            request(app)
+                .patch(`/todos/${todos[1]._id.toHexString()}1`) // note this is supposed to be incorrect hence "1" at the end
+                .expect(404)
+                .end(done);
+        });
+        
+        
+        it('should get 404 if invalid obj id', (done) => {
+            request(app)
+                .patch(`/todos/123`)
                 .expect(404)
                 .end(done);
         });
