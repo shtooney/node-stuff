@@ -42,3 +42,17 @@ MongoClient.connect('mongodb://localhost:27017/TodoApp', (err, db) => {
     });
 
 });
+
+    /*
+    let newUser = new User({
+        email: '      test2@test.test  '
+    });
+
+    newUser.save().then((doc) => {
+        console.log('------');
+        console.log('saved todo', JSON.stringify(doc, undefined, 2));
+        console.log('------');
+    }, (e) => {
+        console.log('Unable to save todo');
+    });
+    */
