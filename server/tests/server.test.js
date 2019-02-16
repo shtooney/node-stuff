@@ -104,4 +104,44 @@ describe('POST /todos', () => {
 
     });
 
+    describe('DELETE /todos/:id', () => {
+
+        it('should delete todo for given ID', (done) => {
+            request(app)
+                .delete(`/todos/${todos[0]._id.toHexString()}`)
+                .expect(200)
+                .expect((res) => {
+                    expect(res.body.todo._id).toBe(todos[0]._id.toHexString());
+                })
+                .end((err, res) => {
+                    if(err) {
+                        return done(err);
+                    }
+                    
+                    Todo.findById(todos[0]._id.toHexString()).then((todo) => {
+                        expect(todo).toNotExist();
+                        done();
+                    }).catch((e) => done);
+
+                });
+        });
+
+        
+        it('should get 404 if obj not found', (done) => {
+            request(app)
+                .delete(`/todos/${todos[0]._id.toHexString()}1`) // note this is supposed to be incorrect hence "1" at the end
+                .expect(404)
+                .end(done);
+        });
+        
+        it('should get 404 if invalid obj id', (done) => {
+            request(app)
+                .delete(`/todos/123`)
+                .expect(404)
+                .end(done);
+        });
+       
+
+    });
+
 });
