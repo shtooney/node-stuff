@@ -117,7 +117,7 @@ describe('POST /todos', () => {
                     if(err) {
                         return done(err);
                     }
-                    
+
                     Todo.findById(todos[0]._id.toHexString()).then((todo) => {
                         expect(todo).toNotExist();
                         done();
